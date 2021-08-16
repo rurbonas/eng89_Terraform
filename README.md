@@ -1,5 +1,7 @@
 # IaC with Terraform
 
+![](terraform.png)
+
 We'll build a script to connect to AWS and download/setup all dependencies
 - keyword: `provider` allows us to connect to aws
 - then we will run `terraform init`
@@ -9,14 +11,22 @@ We'll build a script to connect to AWS and download/setup all dependencies
 - `terraform plan` to check syntax
 - `terraform apply` to execute code
 
-```JSON
+Create a `variable.tf` file
+```
+variable "AWS_KEY_NAME" 
+	{ default = "eng89_ron_ter" }
+variable "AWS_KEY_PATH" 
+	{ default = "~/.ssh/eng89_ron_ter.pem" }
+```
+Edit `main.tf`
+```
 provider "aws" {
 	
 	region = "eu-west-1"
 }
 
 resource "aws_instance" "app_instance" {
-	key_name = "eng89_ron_ter"
+	key_name = var.AWS_KEY_NAME
 	ami = "ami-038d7b856fe7557b3"
 	instance_type = "t2.micro"
 	associate_public_ip_address = true
@@ -43,4 +53,7 @@ Import Public key to AWS
 Now we can SSH into the newly created EC2 instance from our .ssh folder
 
 
-...Work in progress
+
+
+More info on how to set-up Tables:
+https://github.com/rurbonas/eng89_VPC_setup
