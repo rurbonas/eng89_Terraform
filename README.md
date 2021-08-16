@@ -1,6 +1,6 @@
 # IaC with Terraform
 
-![](terraform.png)
+![](terra.png)
 
 We'll build a script to connect to AWS and download/setup all dependencies
 - keyword: `provider` allows us to connect to aws
