@@ -143,6 +143,12 @@ resource "aws_security_group" "ssh-allowed" {
         protocol = "tcp"
         cidr_blocks = ["0.0.0.0/0"]
     }
+    ingress {
+        from_port = 3000
+        to_port = 3000
+        protocol = "tcp"
+        cidr_blocks = ["0.0.0.0/0"]
+    }
     tags = {
         Name = "eng89_ron_sg_app"
     }
