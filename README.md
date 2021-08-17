@@ -136,7 +136,7 @@ resource "aws_security_group" "ssh-allowed" {
         protocol = "tcp"
         cidr_blocks = [var.my_ip]
     }
-    //If you do not add this rule, you can not reach the NGIX  
+ 
     ingress {
         from_port = 80
         to_port = 80
