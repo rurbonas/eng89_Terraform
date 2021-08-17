@@ -10,6 +10,9 @@ resource "aws_vpc" "terraform_vpc_code_test" {
   cidr_block       = var.cidr_block 
   #"10.0.0.0/16"
   instance_tenancy = "default"
+  enable_dns_support = true
+  enable_dns_hostnames = true
+
   
   tags = {
     Name = var.vpc_name
@@ -91,6 +94,56 @@ resource "aws_security_group" "ssh-allowed" {
     }
 }
 
+# NETWORK ACLs
+resource "aws_network_acl" "public_nacl" {
+  vpc_id = aws_vpc.terraform_vpc_code_test.id
+
+  
+  ingress {
+      protocol   = "tcp"
+      rule_no    = 100
+      action     = "allow"
+      cidr_block = "0.0.0.0/0"
+      from_port  = 80
+      to_port    = 80
+    }
+
+
+
+  ingress {
+      protocol   = "tcp"
+      rule_no    = 120
+      action     = "allow"
+      cidr_block = var.my_ip # MY IP
+      from_port  = 22
+      to_port    = 22
+    }
+
+  egress {
+      protocol   = "tcp"
+      rule_no    = 110
+      action     = "allow"
+      cidr_block = "0.0.0.0/0"
+      from_port  = 80
+      to_port    = 80
+    }
+
+  egress {
+      protocol   = "tcp"
+      rule_no    = 120
+      action     = "allow"
+      cidr_block = "10.211.2.0/24"
+      from_port  = 27017
+      to_port    = 27017
+    }
+
+
+
+  tags = {
+    Name = "eng89_ron_terra_nacl_pub"
+  }
+}
+
 # launch an instance
 resource "aws_instance" "app_instance" {
   ami = var.app_ami_id
@@ -104,4 +157,18 @@ resource "aws_instance" "app_instance" {
    #The key_name to ssh into instance
   key_name = var.aws_key_name
   # aws_key_path = var.aws_key_path
+
+  connection {
+      type        = "ssh"
+      user        = "ubuntu"
+      private_key = file(var.aws_key_path)
+      host        = self.public_ip
+    }
+
+  provisioner "remote-exec" {
+	inline = [
+	"cd app/",
+	"npm start"
+	]
+  }
 }
