@@ -97,7 +97,6 @@ resource "aws_instance" "app_instance" {
   instance_type = "t2.micro"
   associate_public_ip_address = true
   subnet_id = aws_subnet.prod-subnet-public-1.id
-  # vpc_security_group_ids = ["${aws_security_group.ssh-allowed.id}"]
   vpc_security_group_ids = [aws_security_group.ssh-allowed.id]
   tags = {
       Name = var.name
